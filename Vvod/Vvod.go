@@ -161,9 +161,22 @@ func vod() {
 		panic(err)
 	}
 	defer resp1.Body.Close()
+	if resp1.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp1.Body)
+		fmt.Println("Ошибка", string(body))
+		return
+	}
 
+	// Декодирование ответа сервера
+	decoder := json.NewDecoder(resp1.Body)
+	var response map[string]interface{}
+	if err := decoder.Decode(&response); err != nil {
+		fmt.Println("Ошибка декодирования JSON:", err)
+		return
+	}
 	if resp1.StatusCode == http.StatusOK {
 		println("Request sent successfully")
+		fmt.Println("Ответ: ", response["result"])
 	} else {
 		println("Error:", resp1.Status)
 	}
@@ -200,37 +213,80 @@ func test() {
 		panic(err)
 	}
 	defer resp1.Body.Close()
+	if resp1.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp1.Body)
+		fmt.Println("Ошибка", string(body))
+		return
+	}
 
+	// Декодирование ответа сервера
+	decoder1 := json.NewDecoder(resp1.Body)
+	var response1 map[string]interface{}
+	if err := decoder1.Decode(&response1); err != nil {
+		fmt.Println("Ошибка декодирования JSON:", err)
+		return
+	}
 	if resp1.StatusCode == http.StatusOK {
 		println("Request sent successfully")
+		fmt.Println("Ответ: ", response1["result"])
 		a++
+
 	} else {
 		println("Error:", resp1.Status)
 	}
+
 	resp2, err := http.Post("http://localhost:8080/", "application/json", bytes.NewBuffer(jsonData2))
 	if err != nil {
 		panic(err)
 	}
 	defer resp2.Body.Close()
+	if resp2.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp2.Body)
+		fmt.Println("Ошибка", string(body))
+		return
+	}
 
+	// Декодирование ответа сервера
+	decoder2 := json.NewDecoder(resp2.Body)
+	var response2 map[string]interface{}
+	if err := decoder2.Decode(&response2); err != nil {
+		fmt.Println("Ошибка декодирования JSON:", err)
+		return
+	}
 	if resp2.StatusCode == http.StatusOK {
 		println("Request sent successfully")
+		fmt.Println("Ответ: ", response2["result"])
 		a++
 	} else {
-		println("Error:", resp1.Status)
+		println("Error:", resp2.Status)
 	}
+
 	resp3, err := http.Post("http://localhost:8080/", "application/json", bytes.NewBuffer(jsonData3))
 	if err != nil {
 		panic(err)
 	}
 	defer resp3.Body.Close()
+	if resp3.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp3.Body)
+		fmt.Println("Ошибка", string(body))
+		return
+	}
 
+	// Декодирование ответа сервера
+	decoder3 := json.NewDecoder(resp3.Body)
+	var response3 map[string]interface{}
+	if err := decoder3.Decode(&response3); err != nil {
+		fmt.Println("Ошибка декодирования JSON:", err)
+		return
+	}
 	if resp3.StatusCode == http.StatusOK {
 		println("Request sent successfully")
+		fmt.Println("Ответ: ", response3["result"])
 		a++
 	} else {
-		println("Error:", resp1.Status)
+		println("Error:", resp3.Status)
 	}
+
 	if a == 3 {
 		fmt.Println("Вердикт: ОК")
 	}

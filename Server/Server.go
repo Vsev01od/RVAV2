@@ -25,10 +25,14 @@ func main() {
 	db, _ := sql.Open("sqlite3", "./gopher.db")
 	statement, _ := db.Prepare("CREATE TABLE IF NOT EXISTS people (vod TEXT)")
 	statement.Exec()
+	//_, err := db.Exec("DELETE FROM people")
+	//if err != nil {
+	//panic(err)
+	//}
 	statement, _ = db.Prepare("INSERT INTO people (vod) VALUES (?)")
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/login", loginHandler)
-
+	//http.HandleFunc("/test", )
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
 		//1
@@ -61,6 +65,24 @@ func main() {
 		i := infixToPostfix(str)
 		result := evaluatePostfix(i)
 		fmt.Printf("Ответ: %v\n", result)
+
+		response1 := map[string]interface{}{
+			"message": "OK",
+			"result":  result,
+		}
+
+		// Преобразование ответа в JSON
+		jsonResponse1, err := json.Marshal(response1)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Отправка ответа
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse1)
+		return
 
 	})
 	http.ListenAndServe("localhost:8080", nil)
